@@ -1,0 +1,4 @@
+swe-custom-bench eval branch — base_commit: 4a2fdce62b73944030cff9b3e52862868ca9584d
+repo: pytest-dev/pytest
+branch: eval-pytest-dev__pytest-5221-set-b
+set: set_b (first instance)
