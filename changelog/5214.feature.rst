@@ -1,0 +1,1 @@
+Improve the default logging format, adding the logger name (``%(name)s``) to it: this makes it possible to identify the module that generated the message, instead of just the filename (which might be shared by modules with the same name in different packages).

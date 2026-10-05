@@ -49,6 +49,28 @@ def test_messages_logged(testdir):
     result.stdout.fnmatch_lines(["*- Captured stderr call -*", "text going to stderr"])
 
 
+def test_default_log_format_includes_logger_name(testdir):
+    """Logger name should be part of the default log format, so that log
+    messages can be attributed to the module that emitted them even when
+    multiple modules share the same filename (#5214)."""
+    testdir.makepyfile(
+        """
+        import logging
+
+        logger = logging.getLogger("test_logger_name")
+
+        def test_foo():
+            logger.info('text going to logger')
+            assert False
+        """
+    )
+    result = testdir.runpytest("--log-level=INFO")
+    assert result.ret == 1
+    result.stdout.fnmatch_lines(
+        ["*- Captured *log call -*", "INFO     test_logger_name:test_default_log_format_includes_logger_name.py:*text going to logger*"]
+    )
+
+
 def test_root_logger_affected(testdir):
     testdir.makepyfile(
         """
