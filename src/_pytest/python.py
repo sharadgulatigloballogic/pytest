@@ -1346,6 +1346,8 @@ def _showfixtures_main(config, session):
             funcargspec = "%s -- %s" % (argname, bestrel)
         else:
             funcargspec = argname
+        if fixturedef.scope != "function":
+            funcargspec += " [%s scope]" % fixturedef.scope
         tw.line(funcargspec, green=True)
         loc = getlocation(fixturedef.func, curdir)
         doc = fixturedef.func.__doc__ or ""

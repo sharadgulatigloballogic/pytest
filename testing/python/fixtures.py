@@ -3294,6 +3294,41 @@ class TestShowFixtures(object):
         """
         )
 
+    def test_show_fixtures_with_scope(self, testdir):
+        """--fixtures should display the scope of each fixture when it is
+        not the default "function" scope (#5219)."""
+        p = testdir.makepyfile(
+            '''
+            import pytest
+            @pytest.fixture
+            def arg_function():
+                """function scoped fixture"""
+            @pytest.fixture(scope="class")
+            def arg_class():
+                """class scoped fixture"""
+            @pytest.fixture(scope="module")
+            def arg_module():
+                """module scoped fixture"""
+            @pytest.fixture(scope="session")
+            def arg_session():
+                """session scoped fixture"""
+        '''
+        )
+        result = testdir.runpytest("--fixtures", p)
+        result.stdout.fnmatch_lines(
+            """
+            * fixtures defined from*
+            arg_class [class scope]
+                class scoped fixture
+            arg_function
+                function scoped fixture
+            arg_module [module scope]
+                module scoped fixture
+            arg_session [session scope]
+                session scoped fixture
+        """
+        )
+
     def test_fixture_disallow_twice(self):
         """Test that applying @pytest.fixture twice generates an error (#2334)."""
         with pytest.raises(ValueError):
